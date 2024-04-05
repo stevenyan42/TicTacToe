@@ -71,19 +71,70 @@ const gameboard = (function(){
     };
 })();
 
+const gameDisplay = (function(){
+    const gameboard = document.querySelector('.gameboard');
+    const message = document.querySelector('.message');
+
+    const displayBoard = (playTurn) => {
+        for (let row = 0; row < 3; row++){
+            for (let col = 0; col < 3; col++){
+                const cell = document.createElement('button');
+                cell.classList.add('cell');
+                cell.setAttribute("id", `cell${row}-${col}`);
+                cell.textContent = '';
+                gameboard.appendChild(cell);
+
+                cell.addEventListener('click', () => {
+                    playTurn(row, col);
+                    cell.disabled = true;
+                })
+            }
+        }
+    };
+
+    const updateCell = (row, col, marker) => {
+        const cell = document.querySelector(`#cell${row}-${col}`);
+        cell.textContent = `${marker}`;
+    }
+
+    const updateMessage = (text) => {
+        message.textContent = `${text}`
+    }
+
+    const clearCells = () => {
+        gameboard.textContent = '';
+    }
+
+    const disableBoard = () => {
+        const cells = gameboard.childNodes;
+        cells.forEach((cell)=> {
+            cell.disabled = true;
+        });
+    }
+
+    return {
+        displayBoard,
+        updateCell,
+        updateMessage,
+        clearCells,
+        disableBoard
+    };
+})();
+
 class Player {
 
     constructor(marker, name) {
         this.marker = marker;
         this.name = name;
     }
-}
+};
 
-const gameController = (function(board){
+const gameController = (function(board, display){
 
     let playerOne;
     let playerTwo;
     let currPlayer = 1;
+    const newGameButton = document.querySelector(".new-game");
 
     const createPlayers = (name1, name2) => {
         playerOne = new Player("x", name1);
@@ -95,14 +146,16 @@ const gameController = (function(board){
     };
 
     const startGame = () => {
-        createPlayers("player1", "player2");
+        createPlayers("play1", "play2");
         board.clearBoard();
+        display.clearCells();
+        display.displayBoard(playTurn);
         currPlayer = 1;
-        console.log(`player${currPlayer}'s turn`)
+        console.log(`player${playerOne.name}'s turn`);
+        display.updateMessage(`${playerOne.name}'s Turn`);
         //fordebugging
-        board.printBoard();
+        //board.printBoard();
     };
-
 
     const playTurn = (row, col) => {
         if (board.getBoardSpace(row, col) !== '') {
@@ -121,20 +174,29 @@ const gameController = (function(board){
             if (currPlayer === 1){
                 //player1 win
                 console.log("player1 wins");
+                display.updateMessage(`${playerOne.name} Wins!`);
+                display.disableBoard();
                 return;
             } else {
                 //player2 win
                 console.log("player2 wins")
+                display.updateMessage(`${playerTwo.name} Wins!`);
+                display.disableBoard();
                 return;
             }
         } else if (board.checkBoardTie()){
             //tie
             console.log("tie");
+            display.updateMessage("It's a Tie!");
             return;
         }
 
         setPlayerTurn();
-        console.log(`player${currPlayer}'s turn`);
+        if (currPlayer === 1){
+            display.updateMessage(`${playerOne.name}'s Turn`);
+        } else {
+            display.updateMessage(`${playerTwo.name}'s Turn`);
+        }
         //fordebugging
         board.printBoard();
 
@@ -142,10 +204,13 @@ const gameController = (function(board){
 
     const playSpace = (row, col, player) => {
         board.setBoardSpace(row, col, player.marker);
+        display.updateCell(row, col, player.marker);
     };
+
+    newGameButton.addEventListener("click", startGame);
 
     return {
         startGame,
         playTurn
     };
-})(gameboard);
+})(gameboard, gameDisplay);
