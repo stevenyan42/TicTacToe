@@ -87,6 +87,7 @@ const gameDisplay = (function(){
                 cell.addEventListener('click', () => {
                     playTurn(row, col);
                     cell.disabled = true;
+                    cell.classList.add('disabled');
                 })
             }
         }
@@ -109,6 +110,7 @@ const gameDisplay = (function(){
         const cells = gameboard.childNodes;
         cells.forEach((cell)=> {
             cell.disabled = true;
+            cell.classList.add('disabled');
         });
     }
 
@@ -134,7 +136,11 @@ const gameController = (function(board, display){
     let playerOne;
     let playerTwo;
     let currPlayer = 1;
-    const newGameButton = document.querySelector(".new-game");
+    const newGameButton = document.querySelector(".newgame-button");
+    const newGameDialog = document.querySelector(".newgame-dialog");
+    const newGameForm = document.querySelector(".newgame-form");
+    const formInput1 = document.querySelector(".p1-name");
+    const formInput2 = document.querySelector(".p2-name");
 
     const createPlayers = (name1, name2) => {
         playerOne = new Player("x", name1);
@@ -145,16 +151,14 @@ const gameController = (function(board, display){
         currPlayer = currPlayer === 1 ? 2 : 1;
     };
 
-    const startGame = () => {
-        createPlayers("play1", "play2");
+    const startGame = (play1, play2) => {
+        createPlayers(play1, play2);
         board.clearBoard();
         display.clearCells();
         display.displayBoard(playTurn);
         currPlayer = 1;
         console.log(`player${playerOne.name}'s turn`);
         display.updateMessage(`${playerOne.name}'s Turn`);
-        //fordebugging
-        //board.printBoard();
     };
 
     const playTurn = (row, col) => {
@@ -207,10 +211,19 @@ const gameController = (function(board, display){
         display.updateCell(row, col, player.marker);
     };
 
-    newGameButton.addEventListener("click", startGame);
+    newGameButton.addEventListener("click", () => {
+        newGameDialog.showModal();
+    });
+
+    newGameForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        newGameDialog.close();
+        startGame(formInput1.value, formInput2.value);
+        formInput1.value = '';
+        formInput2.value = '';
+    });
 
     return {
-        startGame,
         playTurn
     };
 })(gameboard, gameDisplay);

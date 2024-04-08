@@ -8,8 +8,15 @@
     <title>Tic Tac Toe Game</title>
 </head>
 <body>
+    <dialog class="newgame-dialog">
+        <form class="newgame-form">
+            <input type="text" class="p1-name form-input" id="p1-name" name="p1-name" placeholder="Player1's Name" required>
+            <input type="text" class="p2-name form-input" id="p2-name" name="p2-name" placeholder="Player2's Name" required>
+            <button type="submit" class="start-button">Start Game</button>
+        </form>
+    </dialog>
     <h1>Tic Tac Toe</h1>
-    <button class="new-game">New Game</button>
+    <button class="newgame-button">New Game</button>
     <h2 class="message"></h2>
     <div class="gameboard"></div>
 </body>

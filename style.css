@@ -16,7 +16,7 @@ h1 {
     font-size: 5rem;
 }
 
-.new-game {
+.newgame-button {
     margin-bottom: 2rem;
     padding: 0.5rem;
     font-size: 2rem;
@@ -62,4 +62,41 @@ button {
 
 .cell:nth-child(7), .cell:nth-child(8), .cell:nth-child(9) {
     border-bottom: none;
+}
+
+/*form*/
+.newgame-dialog {
+    margin: auto;
+    border-radius: 1rem;
+    width: 30rem;
+    height: 20rem;
+
+}
+
+.newgame-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding: 2rem;
+    justify-content: center;
+    justify-items: center;
+}
+
+.form-input {
+    font-size: 2rem;
+    padding: 0.2rem;
+}
+
+.start-button {
+    font-size: 2rem;
+    border-radius: 0.3rem;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button.disabled:hover {
+    cursor: not-allowed;
 }
